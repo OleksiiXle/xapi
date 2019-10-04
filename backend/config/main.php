@@ -8,19 +8,40 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
+    'defaultRoute' => '/site',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
-    'modules' => [],
+    'controllerMap' => [
+        'wcontroller' => 'common\components\widgets\controllers\WidgetController',
+    ],
+    'modules' => [
+        'adminx' => [
+            'class' => 'backend\modules\adminx\Adminx',
+        ],
+    ],
     'components' => [
+        'configs' => [
+            'class' => 'common\components\ConfigsComponent',
+        ],
         'request' => [
             'csrfParam' => '_csrf-backend',
         ],
+        'cache' => [
+            'class' => 'yii\caching\FileCache',
+        ],
         'user' => [
-            'identityClass' => 'common\models\User',
+            'class' => 'backend\modules\adminx\components\User',
+            'identityClass' => 'backend\modules\adminx\models\User',
+            'loginUrl' => ['site/login'],
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
         ],
+        'authManager' => [
+            'class' => 'backend\modules\adminx\components\DbManager',
+            'cache' => 'cache'
+        ],
+
         'session' => [
             // this is the name of the session cookie used for login on the backend
             'name' => 'advanced-backend',
@@ -37,14 +58,16 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
             ],
         ],
-        */
+        'conservation' => [
+            'class' => 'common\components\conservation\ConservationComponent',
+        ],
+
     ],
     'params' => $params,
 ];

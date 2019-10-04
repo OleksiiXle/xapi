@@ -1,6 +1,7 @@
 <?php
 namespace backend\controllers;
 
+use backend\modules\adminx\models\form\Login;
 use Yii;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
@@ -22,11 +23,11 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'error', 'index'],
                         'allow' => true,
                     ],
                     [
-                        'actions' => ['logout', 'index'],
+                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -60,6 +61,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
+        $i=1;
         return $this->render('index');
     }
 
@@ -70,10 +72,19 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $r=1;
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
-
+        $model = new Login();
+        if ($model->load(\Yii::$app->getRequest()->post()) && $model->login()) {
+            return $this->goBack();
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
+/*
         $model = new LoginForm();
         if ($model->load(Yii::$app->request->post()) && $model->login()) {
             return $this->goBack();
@@ -84,6 +95,7 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
+*/
     }
 
     /**
