@@ -5,10 +5,6 @@ $style = ($offset < 0) ? 'style= "display: none;  margin-left: ' . $offset . 'px
 <style>
     .route {
         cursor: pointer;
-        /*font-size: small;*/
-
-        /*  font-size: medium;*/
-
     }
     .menu-icon{
 
@@ -44,7 +40,7 @@ $style = ($offset < 0) ? 'style= "display: none;  margin-left: ' . $offset . 'px
         <li class="items" <?=$style;?>>
             <?php foreach ($items as $text => $route):?>
                 <?php if (is_array($route)):?>
-                    <a class="route" href="<?=$route['route'];?>">
+                    <a class="route" href="<?=$route['route'];?>" <?=$method;?>>
                         <span>
                         <span class="<?=$route['icon']?>"></span>
                         <span style="padding-left: 5px"><?=$text;?></span>

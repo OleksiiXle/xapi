@@ -10,7 +10,9 @@ class Route extends \yii\base\BaseObject
      * Get list of application routes
      * @return array
      */
-    public function getAppRoutes($module = null) {
+    public function getAppRoutes($module = null)
+    {
+        $r = 1;
         if ($module === null) {
             $module = Yii::$app;
         } elseif (is_string($module)) {

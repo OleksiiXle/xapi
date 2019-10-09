@@ -20,7 +20,8 @@ class MenuXWidget extends InputWidget
     public function run()
     {
         $i=1;
-        if (\Yii::$app->user->isGuest){
+      //  if (\Yii::$app->user->isGuest){
+        if (1 == 1){
             $menus = [''];
         } else {
             $user_id = \Yii::$app->user->getId();

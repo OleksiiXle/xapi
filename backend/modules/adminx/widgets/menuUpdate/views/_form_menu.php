@@ -17,8 +17,11 @@ use \dosamigos\datepicker\DatePicker;
             <?php
             echo $form->field($model, 'sort', ['inputOptions' => ['class' => 'form-control', 'tabindex' => '1']]);
             echo $form->field($model, 'name', ['inputOptions' => ['class' => 'form-control', 'tabindex' => '1']]);
+            echo $form->field($model, 'route', ['inputOptions' => ['class' => 'form-control', 'tabindex' => '3']]);
+            /*
             echo $form->field($model, 'route', ['inputOptions' => ['class' => 'form-control', 'tabindex' => '3']])
                 ->dropDownList($routes, ['options' => [ $model->route => ['Selected' => true]],]);
+            */
             echo $form->field($model, 'role')
                 ->dropDownList($permissions,
                     ['options' => [ $model->role => ['Selected' => true]],]);

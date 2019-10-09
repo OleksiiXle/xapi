@@ -11,6 +11,7 @@ class MenuActionWidget extends Widget
         'text' => 'route',
     ];
     public $offset = 0;
+    public $method = '';
 
 
     public function run()
@@ -21,6 +22,7 @@ class MenuActionWidget extends Widget
                 'icon' => $this->icon,
                 'items' => $this->items,
                 'offset' => $this->offset,
+                'method' => (!empty($this->method)) ? 'data-method=' . $this->method : '',
             ]);
     }
 

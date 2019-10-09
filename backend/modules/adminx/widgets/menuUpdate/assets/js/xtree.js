@@ -122,8 +122,10 @@ var MENU_TREE = {
     //-- рисует дефолтное дерево (вершины, у которых нет парентов
     drawDefaultTree: function (tree_id) {
         var that = this;
+      //  var csrf = $('meta[name="scrf-token"]').attr('content');
+        console.log(_csrfT);
         $.ajax({
-            url: '/wcontroller/menux-get-default-tree',
+            url: '/adminx/menux/menux-get-default-tree',
             type: "POST",
             data: {'_csrf':_csrfT},
             dataType: 'json',

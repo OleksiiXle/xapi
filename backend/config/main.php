@@ -8,7 +8,7 @@ $params = array_merge(
 
 return [
     'id' => 'app-backend',
-    'defaultRoute' => '/site',
+    'defaultRoute' => '/adminx',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -19,13 +19,25 @@ return [
         'adminx' => [
             'class' => 'backend\modules\adminx\Adminx',
         ],
+        'kino' => [
+            'class' => 'backend\modules\kino\Kino',
+        ],
+        'v1' => [
+            'class' => 'backend\modules\v1\V1',
+        ],
     ],
     'components' => [
         'configs' => [
             'class' => 'common\components\ConfigsComponent',
         ],
         'request' => [
-            'csrfParam' => '_csrf-backend',
+          //  'csrfParam' => '_csrf-backend',
+            'cookieValidationKey' => 'bBlVg2eb_z1rlmjkAO6losdfsd4otSDI3Smwa',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ],
+
+
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -53,7 +65,15 @@ return [
                     'class' => 'yii\log\FileTarget',
                     'levels' => ['error', 'warning'],
                 ],
+                [
+                    'class' => 'yii\log\FileTarget',
+                    'levels' => ['error', 'trace', 'info'],
+                    'categories' => ['dbg'],
+                    'logFile' => '@runtime/dbg/dbg.log',
+                    'logVars' => [],
+                ],
             ],
+
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',

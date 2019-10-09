@@ -9,10 +9,10 @@ class MainModel extends \yii\db\ActiveRecord
 
     public function beforeSave($insert) {
         $this->updated_at = time();
-        $this->updated_by = (isset(\Yii::$app->user->id)) ? \Yii::$app->user->id : 0;
+      //  $this->updated_by = (isset(\Yii::$app->user->id)) ? \Yii::$app->user->id : 0;
         if ($insert){
             $this->created_at = time();
-            $this->created_by = (isset(\Yii::$app->user->id)) ? \Yii::$app->user->id : 0;
+         //   $this->created_by = (isset(\Yii::$app->user->id)) ? \Yii::$app->user->id : 0;
 
         }
         return parent::beforeSave($insert);

@@ -15,11 +15,26 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 
+use yii\httpclient\Client;
+use yii\httpclient\Request;
+use yii\web\NotFoundHttpException;
+
+
 /**
  * Site controller
  */
 class SiteController extends Controller
 {
+
+    public $layout = '@app/views/layouts/xLayout.php';
+
+    protected function checkResponse($response)
+    {
+        if (!$response->isOk && (!empty($response->data['message']))){
+            $session = Yii::$app->session;
+            $session->setFlash('danger', $response->data['message']);
+        }
+    }
     /**
      * {@inheritdoc}
      */
@@ -66,6 +81,110 @@ class SiteController extends Controller
             ],
         ];
     }
+
+    public function actionSeansesList()
+    {
+        $t=1;
+        if (!\Yii::$app->request->isPost){
+            $client = new Client();
+            $response = $client->createRequest()
+                ->setMethod('GET')
+                ->setUrl('http://advanced.admin/v1/sale')
+                // ->setData(['name' => 'John Doe', 'email' => 'johndoe@example.com'])
+                ->send();
+            $seansesList = $response->isOk ? $response->data : [];
+            $result['data'] = $response->data;
+            $result['code'] = $response->headers['http-code'];
+            $result['headers'] = $response->headers;
+            return $this->render('seansesList',[
+                'seansesList' => $seansesList,
+                'response' => $response,
+                'result' => $result,
+            ]);
+        } else {
+            $_post = \Yii::$app->request->post();
+            if (isset($_post['seansId'])){
+                $seansId = $_post['seansId'];
+                return $this->redirect(['/site/choise-seats', 'seansId' =>$seansId]);
+            } else {
+                throw new NotFoundHttpException('Сеанс не найден');
+            }
+        }
+
+    }
+
+    public function actionChoiseSeats($seansId)
+    {
+        $t=1;
+        if (!\Yii::$app->request->isPost){
+            $client = new Client();
+            $response = $client->createRequest()
+                ->setMethod('GET')
+                ->setUrl('http://advanced.admin/v1/sale/get-seans')
+                ->setData(['id' => $seansId])
+                ->send();
+            $seans = $response->isOk ? $response->data : [];
+            $result['data'] = $response->data;
+            $result['code'] = $response->headers['http-code'];
+            $result['headers'] = $response->headers;
+            return $this->render('seans',[
+                'seans' => $seans,
+                'response' => $response,
+                'result' => $result,
+            ]);
+
+        } else {
+            $_post = \Yii::$app->request->post();
+            if (isset($_post['reservation'])){
+                $datas = json_decode($_post['reservation'], true);
+                if (!empty($datas)){
+                    return $this->redirect(['/site/make-reservation',
+                        'seansId' => $seansId,
+                        'reservation' => $_post['reservation'],
+                    ]);
+                }
+                return $this->redirect('/site/seanses-list');
+            } else {
+                throw new NotFoundHttpException('Сеанс не найден');
+            }
+        }
+    }
+
+    public function actionMakeReservation($seansId, $reservation)
+    {
+        $datas = json_decode($reservation, true);
+        foreach ($datas as $data){
+            $buf = json_decode($data, true);
+            $myReservation[] = [
+                'rowNumber' => $buf['rowNumber'],
+                'seatNumber' => $buf['seatNumber'],
+                'persona' => 'lokoko',
+            ];
+        }
+        if (!empty($myReservation)){
+            $client = new Client();
+            $response = $client->createRequest()
+                ->setMethod('POST')
+                ->setUrl('http://advanced.admin/v1/sale/get-reservation')
+                ->setData(['seansId' => $seansId, 'reservation' => $myReservation] )
+                ->send();
+            $this->checkResponse($response);
+        //    return $this->render('debug' , ['response' => $response] );
+            if ($response->isOk){
+                return $this->render('seansSuccessMessage', ['reservation' => $response->data]);
+            } else {
+                return $this->redirect(['/site/choise-seats', 'seansId' => $seansId]);
+            }
+        } else {
+            throw new NotFoundHttpException('Данные пусты');
+        }
+
+    }
+
+
+
+
+
 
     /**
      * Displays homepage.
@@ -257,4 +376,6 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+
 }
